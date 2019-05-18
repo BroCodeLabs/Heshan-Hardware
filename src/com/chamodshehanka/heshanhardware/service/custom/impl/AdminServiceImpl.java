@@ -3,17 +3,14 @@ package com.chamodshehanka.heshanhardware.service.custom.impl;
 import com.chamodshehanka.heshanhardware.model.Admin;
 import com.chamodshehanka.heshanhardware.service.custom.AdminService;
 import com.chamodshehanka.heshanhardware.util.CommonConstants;
-import com.chamodshehanka.heshanhardware.util.CommonUtil;
 import com.chamodshehanka.heshanhardware.util.DBConnectionUtil;
+import com.chamodshehanka.heshanhardware.util.IDGenerator;
 import com.chamodshehanka.heshanhardware.util.QueryUtil;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
@@ -32,73 +29,115 @@ public class AdminServiceImpl implements AdminService {
         createAdminTable();
     }
 
-    public static void createAdminTable(){
+    private static void createAdminTable(){
         try {
             connection = DBConnectionUtil.getDBConnection();
             statement = connection.createStatement();
-            statement.executeUpdate(QueryUtil.queryByID(CommonConstants.QUERY_ID_DROP_TABLE));
-            statement.executeUpdate(QueryUtil.queryByID(CommonConstants.QUERY_ID_CREATE_TABLE));
-        } catch (SQLException | IOException | ParserConfigurationException | SAXException | ClassNotFoundException e) {
+            statement.executeUpdate(QueryUtil.queryByID(CommonConstants.QUERY_ID_CREATE_ADMIN_TABLE));
+        } catch (SQLException | ClassNotFoundException | SAXException | ParserConfigurationException | IOException e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public void add(Admin admin) {
-        assert getAdminIDs() != null;
-        String adminID = CommonUtil.generateIDs(getAdminIDs());
-
+    public boolean add(Admin admin) {
         try {
             connection = DBConnectionUtil.getDBConnection();
-            preparedStatement = connection
-                    .prepareStatement(QueryUtil.queryByID(CommonConstants.QUERY_ID_INSERT_ADMIN));
-            connection.setAutoCommit(false);
+            preparedStatement = connection.prepareStatement(QueryUtil.queryByID(CommonConstants.QUERY_ID_INSERT_ADMIN));
 
-            admin.setAdminID(adminID);
-            preparedStatement.setString(CommonConstants.COLUMN_INDEX_ONE, admin.getAdminID());
-            preparedStatement.setString(CommonConstants.COLUMN_INDEX_TWO, admin.getUserName());
-            preparedStatement.setString(CommonConstants.COLUMN_INDEX_THREE, admin.getPassword());
+            preparedStatement.setObject(CommonConstants.COLUMN_INDEX_ONE, admin.getAdminID());
+            preparedStatement.setObject(CommonConstants.COLUMN_INDEX_TWO, admin.getUserName());
+            preparedStatement.setObject(CommonConstants.COLUMN_INDEX_THREE, admin.getPassword());
 
-            preparedStatement.execute();
-            connection.commit();
-        } catch (SQLException | SAXException | IOException | ParserConfigurationException | ClassNotFoundException e) {
+            return 0 < preparedStatement.executeUpdate();
+        } catch (SQLException | ClassNotFoundException | SAXException | ParserConfigurationException | IOException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                if (preparedStatement != null){
-                    preparedStatement.close();
-                }
-
-                if (connection != null){
-                    connection.close();
-                }
-            }catch (SQLException e){
-                e.printStackTrace();
-            }
         }
+        return false;
     }
 
     @Override
-    public Admin getByID(String s) {
+    public Admin getByID(String adminID) {
+        try {
+            connection = DBConnectionUtil.getDBConnection();
+            preparedStatement = connection.prepareStatement(QueryUtil.queryByID(CommonConstants.QUERY_ID_GET_ADMIN));
+            preparedStatement.setObject(CommonConstants.COLUMN_INDEX_ONE, adminID);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()){
+                return new Admin(
+                        resultSet.getString(CommonConstants.COLUMN_INDEX_ONE),
+                        resultSet.getString(CommonConstants.COLUMN_INDEX_TWO),
+                        resultSet.getString(CommonConstants.COLUMN_INDEX_THREE)
+                );
+            }
+        } catch (SQLException | ClassNotFoundException | SAXException | ParserConfigurationException | IOException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
     @Override
-    public Admin update(String adminID, Admin admin) {
-        return null;
+    public boolean update(String adminID, Admin admin) {
+        try {
+            connection = DBConnectionUtil.getDBConnection();
+            preparedStatement = connection.prepareStatement(QueryUtil.queryByID(CommonConstants.QUERY_ID_UPDATE_ADMIN));
+
+            preparedStatement.setObject(CommonConstants.COLUMN_INDEX_ONE, admin.getAdminID());
+            preparedStatement.setObject(CommonConstants.COLUMN_INDEX_TWO, admin.getUserName());
+            preparedStatement.setObject(CommonConstants.COLUMN_INDEX_THREE, admin.getPassword());
+            preparedStatement.setObject(CommonConstants.COLUMN_INDEX_FIVE, adminID);
+
+            return 0 < preparedStatement.executeUpdate();
+
+        } catch (SQLException | ClassNotFoundException | SAXException | ParserConfigurationException | IOException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     @Override
-    public void remove(String adminID) {
-
+    public boolean remove(String adminID) {
+        try {
+            connection = DBConnectionUtil.getDBConnection();
+            preparedStatement = connection.prepareStatement(QueryUtil.queryByID(CommonConstants.QUERY_ID_REMOVE_ADMIN));
+            preparedStatement.setObject(CommonConstants.COLUMN_INDEX_ONE, adminID);
+            return 0 < preparedStatement.executeUpdate();
+        } catch (SQLException | ClassNotFoundException | SAXException | ParserConfigurationException | IOException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     @Override
     public ArrayList<Admin> getAll() {
-        return null;
+        ArrayList<Admin> adminArrayList = new ArrayList<>();
+        try {
+            connection = DBConnectionUtil.getDBConnection();
+            statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(QueryUtil.queryByID(CommonConstants.QUERY_ID_GET_ALL_ADMINS));
+            while (resultSet.next()){
+                adminArrayList.add(new Admin(
+                        resultSet.getString(CommonConstants.COLUMN_INDEX_ONE),
+                        resultSet.getString(CommonConstants.COLUMN_INDEX_TWO),
+                        resultSet.getString(CommonConstants.COLUMN_INDEX_THREE)
+                ));
+            }
+        } catch (SQLException | ClassNotFoundException | SAXException | ParserConfigurationException | IOException e) {
+            e.printStackTrace();
+        }
+        return adminArrayList;
     }
 
-    private ArrayList<String> getAdminIDs(){
-        return null;
+    @Override
+    public String getNewID() {
+        String newID = null;
+        try {
+            newID = IDGenerator.getNewID(CommonConstants.ADMIN_TABLE_NAME,
+                    CommonConstants.ADMIN_TABLE_COL_NAME,CommonConstants.ADMIN_ID_PREFIX);
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return newID;
     }
 }

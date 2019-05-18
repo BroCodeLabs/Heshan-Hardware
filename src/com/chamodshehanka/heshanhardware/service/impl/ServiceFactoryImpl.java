@@ -12,7 +12,7 @@ public class ServiceFactoryImpl implements ServiceFactory {
 
     private static ServiceFactory serviceFactory;
 
-    public ServiceFactoryImpl() {
+    private ServiceFactoryImpl() {
     }
 
     public static ServiceFactory getInstance(){
@@ -22,14 +22,17 @@ public class ServiceFactoryImpl implements ServiceFactory {
     }
 
     @Override
-    public SuperService getService(ServiceType serviceType) throws Exception {
+    public SuperService getService(ServiceType serviceType) {
         switch (serviceType){
             case ADMIN: return new AdminServiceImpl();
             case CUSTOMER: return new CustomerServiceImpl();
             case EMPLOYEE: return new EmployeeServiceImpl();
             case ITEM: return new ItemServiceImpl();
             case ORDER: return new OrderServiceImpl();
-            case ORDERDETAIL: return new OrderDetailServiceImpl();
+            case ORDER_DETAIL: return new OrderDetailServiceImpl();
+            case STAFF: return new StaffServiceImpl();
+            case USER: return new UserServiceImpl();
+            case VENDOR: return new VendorServiceImpl();
             default: return null;
         }
     }

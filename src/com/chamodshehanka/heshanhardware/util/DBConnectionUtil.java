@@ -12,7 +12,7 @@ public class DBConnectionUtil {
 
     private static Connection connection;
 
-    public DBConnectionUtil() {
+    private DBConnectionUtil() {
     }
 
     public static Connection getDBConnection() throws SQLException, ClassNotFoundException {

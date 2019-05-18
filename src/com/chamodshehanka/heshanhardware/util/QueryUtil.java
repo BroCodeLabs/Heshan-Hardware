@@ -13,25 +13,21 @@ import java.io.IOException;
  * @author chamodshehanka on 4/13/2019
  * @project HeshanHardware
  **/
-public class QueryUtil {
+public class QueryUtil extends CommonUtil {
 
     public static String queryByID(String id) throws SAXException, IOException, ParserConfigurationException {
 
         NodeList nodeList;
         Element element = null;
-        /*
-         * Read the EmployeeQuery.xml file and read each query node into node
-         * list. It refers tag name query
-         */
-        nodeList = DocumentBuilderFactory.newInstance().newDocumentBuilder()
-                .parse(new File(System.getProperty(
-                        "catalina.base") + "\\wtpwebapps\\OOPEmployeeWebApp\\WEB-INF\\EmployeeQuery.xml"
-                )).getElementsByTagName(CommonConstants.TAG_NAME);
 
-        /*
-         * Extract the node from node list using query id query id is taken from
-         * query node attribute
-         */
+        File tempPath = new File("E:\\SLIIT\\Apps\\HeshanHardware\\web\\WEB-INF\\DBQuery.xml");
+
+        File file = new File(System
+                .getProperty("user.dir")+"\\web\\WEB-INF\\DBQuery.xml");
+
+        nodeList = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+                .parse(tempPath).getElementsByTagName(CommonConstants.TAG_NAME);
+
         for (int value = 0; value < nodeList.getLength(); value++) {
             element = (Element) nodeList.item(value);
             if (element.getAttribute(CommonConstants.ATTRIB_ID).equals(id))

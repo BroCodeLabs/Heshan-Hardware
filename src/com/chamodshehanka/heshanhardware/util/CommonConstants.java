@@ -88,7 +88,7 @@ public class CommonConstants {
     public static final String QUERY_ID_GET_ALL_ITEMS = "all_items";
 
     public static final String ORDER_ID_PREFIX = "O";
-    public static final String ORDER_TABLE_NAME = "order";
+    public static final String ORDER_TABLE_NAME = "orders";
     public static final String ORDER_TABLE_COL_NAME = "order_id";
     public static final String QUERY_ID_CREATE_ORDER_TABLE = "create_order_table";
     public static final String QUERY_ID_INSERT_ORDER = "insert_order";
@@ -114,16 +114,6 @@ public class CommonConstants {
     public static final String QUERY_ID_UPDATE_STAFF = "update_staff";
     public static final String QUERY_ID_REMOVE_STAFF = "remove_staff";
     public static final String QUERY_ID_GET_ALL_STAFF = "all_staff";
-
-    public static final String STOCK_ID_PREFIX = "S";
-    public static final String STOCK_TABLE_NAME = "stock";
-    public static final String STOCK_TABLE_COL_NAME = "stock_id";
-    public static final String QUERY_ID_CREATE_STOCK_TABLE = "create_stock_table";
-    public static final String QUERY_ID_INSERT_STOCK = "insert_stock";
-    public static final String QUERY_ID_GET_STOCK = "stock_by_id";
-    public static final String QUERY_ID_UPDATE_STOCK = "update_stock";
-    public static final String QUERY_ID_REMOVE_STOCK = "remove_stock";
-    public static final String QUERY_ID_GET_ALL_STOCK = "all_stock";
 
     public static final String USER_ID_PREFIX = "U";
     public static final String USER_TABLE_NAME = "user";

@@ -1,6 +1,6 @@
 package com.chamodshehanka.heshanhardware.servlet;
 
-import com.chamodshehanka.heshanhardware.controller.VendorController;
+import com.chamodshehanka.heshanhardware.controller.StaffController;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -10,22 +10,20 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * @author chamodshehanka on 5/15/2019
+ * @author chamodshehanka on 5/18/2019
  * @project HeshanHardware
  **/
-@WebServlet(name = "DeleteVendorServlet" , urlPatterns = "/DeleteVendor")
-public class DeleteVendorServlet extends HttpServlet {
+@WebServlet(name = "DeleteStaffServlet", urlPatterns = "/DeleteStaff")
+public class DeleteStaffServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String vendorID = request.getParameter("vendorID");
-
-        boolean isRemoved = VendorController.removeVendor(vendorID);
-
-        if (isRemoved){
+        String staffID = request.getParameter("staffID");
+        boolean isDeleted = StaffController.removeStaff(staffID);
+        if (isDeleted){
             request.setAttribute("message", "done");
-            request.getRequestDispatcher("/manage-vendor.jsp").forward(request,response);
+            request.getRequestDispatcher("/manage-staff.jsp").forward(request, response);
         }else {
             request.setAttribute("message", "error");
-            request.getRequestDispatcher("/manage-vendor.jsp").forward(request,response);
+            request.getRequestDispatcher("/manage-staff.jsp").forward(request, response);
         }
     }
 

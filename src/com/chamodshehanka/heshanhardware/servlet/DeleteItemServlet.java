@@ -1,7 +1,6 @@
 package com.chamodshehanka.heshanhardware.servlet;
 
-import com.chamodshehanka.heshanhardware.service.custom.ItemService;
-import com.chamodshehanka.heshanhardware.service.custom.impl.ItemServiceImpl;
+import com.chamodshehanka.heshanhardware.controller.ItemController;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -19,14 +18,14 @@ import java.io.IOException;
 public class DeleteItemServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String itemCode = request.getParameter("itemCode");
-
-        ItemService itemService = new ItemServiceImpl();
-        boolean isRemoved = itemService.remove(itemCode);
+        boolean isRemoved = ItemController.removeItem(itemCode);
 
         if (isRemoved){
+            request.setAttribute("message", "done");
             RequestDispatcher requestDispatcher = getServletContext().getRequestDispatcher("/manage-item.jsp");
             requestDispatcher.forward(request, response);
         } else {
+            request.setAttribute("message", "error");
             RequestDispatcher requestDispatcher = getServletContext().getRequestDispatcher("/error.jsp");
             requestDispatcher.forward(request, response);
         }

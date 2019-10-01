@@ -1,7 +1,6 @@
-<%@ page import="com.chamodshehanka.heshanhardware.service.custom.CustomerService" %>
-<%@ page import="com.chamodshehanka.heshanhardware.service.custom.impl.CustomerServiceImpl" %>
-<%@ page import="java.util.ArrayList" %>
+<%@ page import="com.chamodshehanka.heshanhardware.controller.CustomerController" %>
 <%@ page import="com.chamodshehanka.heshanhardware.model.Customer" %>
+<%@ page import="java.util.ArrayList" %>
 <%--
   Created by IntelliJ IDEA.
   User: chamodshehanka
@@ -44,10 +43,7 @@
 
 
                 <div class="uk-margin">
-                    <%
-                        CustomerService customerService = new CustomerServiceImpl();
-                    %>
-                    <input class="uk-input" type="text" name="customerID" value="<%=customerService.getNewID()%>">
+                    <input class="uk-input" type="text" name="customerID" value="<%=CustomerController.getNewCustomerID()%>">
                 </div>
 
                 <div class="uk-margin">
@@ -57,8 +53,8 @@
                 <div class="uk-margin">
                     <div class="uk-form-label">Gender</div>
                     <div class="uk-form-controls">
-                        <label><input class="uk-radio" type="radio" name="gender"> Male</label><br>
-                        <label><input class="uk-radio" type="radio" name="gender"> Female</label>
+                        <label><input class="uk-radio" type="radio" name="gender" value="Male"> Male</label><br>
+                        <label><input class="uk-radio" type="radio" name="gender" value="Female"> Female</label>
                     </div>
                 </div>
 
@@ -79,7 +75,7 @@
     <%--Update Customer Modal--%>
     <div id="update-customer-modal" uk-modal>
         <div class="uk-modal-dialog uk-modal-body">
-            <h2 class="uk-modal-title">Update Item</h2>
+            <h2 class="uk-modal-title">Update Customer</h2>
 
             <div class="uk-alert-danger" uk-alert>
                 <a class="uk-alert-close" uk-close></a>
@@ -90,7 +86,6 @@
                 if (customer1 == null){
                     customer1 = new Customer("N/A","N/A","N/A","N/A",0);
                 }
-                out.println(customer1.getName());
             %>
 
             <form action="${pageContext.request.contextPath}/UpdateCustomer" method="post">
@@ -149,7 +144,7 @@
                 </tr>
 
                 <%
-                    ArrayList<Customer> customerArrayList = customerService.getAll();
+                    ArrayList<Customer> customerArrayList = CustomerController.getAllCustomers();
 
                     for (Customer customer : customerArrayList
                     ) {
